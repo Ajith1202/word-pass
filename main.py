@@ -2,9 +2,10 @@ import argparse
 import hashlib
 # import db_connect
 import getpass
-
-# from pbkdf2 import PBKDF2
+import os
+from pbkdf2 import PBKDF2
 from Crypto.Cipher import AES
+#from backports.pbkdf2 import pbkdf2_hmac
 
 
 def verify_master_password(entered_password):
@@ -15,10 +16,38 @@ def verify_master_password(entered_password):
 
     return check_hash == master_password_hash
 
+def decrypt_password(master_hash, ciphertext, master_salt):
+
+    key = PBKDF2(master_hash, master_salt).read(16)
+
+    tag = ciphertext[-16:]
+    nonce = ciphertext[:16]
+    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+
+    try:
+        plaintext = cipher.decrypt_and_verify(ciphertext[16:-16], tag)
+        return plaintext
+    except ValueError as error:
+        print("Decryption failed: ", error)
+
+
+def encrypt_password(master_hash, password, master_salt):
+
+    key = PBKDF2(master_hash, master_salt).read(16)
+    
+    cipher = AES.new(key, AES.MODE_EAX)
+
+    nonce = cipher.nonce
+
+    ciphertext, tag = cipher.encrypt_and_digest(password.encode())
+
+    return (nonce, ciphertext, tag)
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser()
 
+    master_password_hash = "bd47fd8caf63798e5fbc3ae160a53be9e37ca75405fb6a1505b937d10e44efd3"
     #add, retrievepassword, updateusername, updatepassword, deleterecord, deleteall
     parser.add_argument("-a", "--add", type=str, nargs=3, help="Add a new password")
     parser.add_argument("-g", "--get", type=str, nargs=1, help="Get password for a domain")
@@ -41,8 +70,16 @@ if __name__ == "__main__":
         print("The password you entered is incorrect")
         exit()
 
-    #print(args.__getattribute__("add"))
-    #print(args.__getattribute__("get"))
 
-    print("The password is correct")
-    # conn = db_connect.connect()
+    salt = b'p\xd3\xd2g\xac\xf4za?\xac\xfd\xe0`\xfa\xb7\xd9'    # using os.urandom(16)
+    
+    if args.__getattribute__("add"):
+        arguments = args.__getattribute__("add")
+
+        domain_name = arguments[0]
+        username = arguments[1]
+        nonce, ciphertext, tag = encrypt_password(master_password_hash, arguments[2], salt)
+
+        password_to_be_stored = nonce[:] + ciphertext + tag[:]
+
+        print(decrypt_password(master_password_hash, nonce[:] + ciphertext + tag[:], salt))
