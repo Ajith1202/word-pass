@@ -1,11 +1,15 @@
 import argparse
 import hashlib
+import sys
+import binascii
 # import db_connect
 import getpass
 import os
 from pbkdf2 import PBKDF2
 from Crypto.Cipher import AES
 #from backports.pbkdf2 import pbkdf2_hmac
+
+from queries import *
 
 
 def verify_master_password(entered_password):
@@ -19,6 +23,8 @@ def verify_master_password(entered_password):
 def decrypt_password(master_hash, ciphertext, master_salt):
 
     key = PBKDF2(master_hash, master_salt).read(16)
+
+    ciphertext = binascii.unhexlify(ciphertext.encode())    # converting back to bytes-object data
 
     tag = ciphertext[-16:]
     nonce = ciphertext[:16]
@@ -71,8 +77,8 @@ if __name__ == "__main__":
         exit()
 
 
-    salt = b'p\xd3\xd2g\xac\xf4za?\xac\xfd\xe0`\xfa\xb7\xd9'    # using os.urandom(16)
-    
+    salt = b'\xd18\xbf~No\xcb\xf5L\xcc\xfd\xda\xf9K?d'   # using os.urandom(16)
+
     if args.__getattribute__("add"):
         arguments = args.__getattribute__("add")
 
@@ -82,4 +88,16 @@ if __name__ == "__main__":
 
         password_to_be_stored = nonce[:] + ciphertext + tag[:]
 
-        print(decrypt_password(master_password_hash, nonce[:] + ciphertext + tag[:], salt))
+        password_to_be_stored = binascii.hexlify(password_to_be_stored).decode()    # string representation of hexadecimal representation of bytes-object data    
+
+        add_password(domain_name, username, password_to_be_stored)
+
+        #print(decrypt_password(master_password_hash, nonce[:] + ciphertext + tag[:], salt))
+    
+    elif args.__getattribute__("get"):
+        arguments = args.__getattribute__("get")
+
+        domain_name = arguments[0]
+        ciphertext = retrieve_password(domain_name)[0]
+
+        print(decrypt_password(master_password_hash, ciphertext, salt).decode())
