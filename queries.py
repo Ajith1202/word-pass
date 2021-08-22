@@ -37,3 +37,21 @@ def retrieve_password(domain_name):
 
     except (Exception, Error) as error:
         print(error)
+
+
+def update_username(domain_name, username):
+
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        
+        #cursor.execute("grant ALL privileges on passwords to word_pass;")
+        sql_query = """update passwords set username=%s where domain_name=%s;"""
+        values = (username, domain_name)
+        cursor.execute(sql_query, values)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    except (Exception, Error) as error:
+        print(error)

@@ -101,3 +101,11 @@ if __name__ == "__main__":
         ciphertext = retrieve_password(domain_name)[0]
 
         print(decrypt_password(master_password_hash, ciphertext, salt).decode())
+
+    elif args.__getattribute__("updatename"):
+        arguments = args.__getattribute__("updatename")
+
+        domain_name = arguments[0]
+        updated_name = arguments[1]
+
+        update_username(domain_name, updated_name)
