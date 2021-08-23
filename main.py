@@ -109,3 +109,11 @@ if __name__ == "__main__":
         updated_name = arguments[1]
 
         update_username(domain_name, updated_name)
+
+    elif args.__getattribute__("updatepassword"):
+        arguments = args.__getattribute__("updatepassword")
+
+        domain_name = arguments[0]
+        updated_password = arguments[1]
+
+        update_password(domain_name, updated_password, encrypt_password, master_password_hash, salt)
