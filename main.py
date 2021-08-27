@@ -4,6 +4,7 @@ import sys
 import binascii
 # import db_connect
 import getpass
+import pyperclip
 import os
 from pbkdf2 import PBKDF2
 from Crypto.Cipher import AES
@@ -100,7 +101,7 @@ if __name__ == "__main__":
         domain_name = arguments[0]
         ciphertext = retrieve_password(domain_name)[0]
 
-        print(decrypt_password(master_password_hash, ciphertext, salt).decode())
+        pyperclip.copy(decrypt_password(master_password_hash, ciphertext, salt).decode())
 
     elif args.__getattribute__("updatename"):
         arguments = args.__getattribute__("updatename")
