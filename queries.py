@@ -82,3 +82,20 @@ def update_password(domain_name, password, encrypt_password, master_password_has
 
     except (Exception, Error) as error:
         print(error)
+
+def delete_password(domain_name):
+
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        
+        #cursor.execute("grant ALL privileges on passwords to word_pass;")
+        sql_query = """delete from passwords where domain_name=%s;"""
+        values = (domain_name,)
+        cursor.execute(sql_query, values)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    except (Exception, Error) as error:
+        print(error)

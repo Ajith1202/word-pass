@@ -118,3 +118,10 @@ if __name__ == "__main__":
         updated_password = arguments[1]
 
         update_password(domain_name, updated_password, encrypt_password, master_password_hash, salt)
+    
+    elif args.__getattribute__("deleterecord"):
+        arguments = args.__getattribute__("deleterecord")
+
+        domain_name = arguments[0]
+
+        delete_password(domain_name)
