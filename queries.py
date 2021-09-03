@@ -99,3 +99,20 @@ def delete_password(domain_name):
 
     except (Exception, Error) as error:
         print(error)
+
+def delete_all():
+
+    try:
+        conn = connect()
+        cursor = conn.cursor()
+        
+        #cursor.execute("grant ALL privileges on passwords to word_pass;")
+        sql_query = """delete from passwords"""
+        cursor.execute(sql_query)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    except (Exception, Error) as error:
+        print(error)
+

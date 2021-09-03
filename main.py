@@ -62,7 +62,7 @@ if __name__ == "__main__":
     parser.add_argument("-un", "--updatename", type=str, nargs=2, help="Update username for a domain")
     parser.add_argument("-up", "--updatepassword", type=str, nargs=2, help="Update password for a domain")
     parser.add_argument("-dr", "--deleterecord", type=str, nargs=1, help="Delete details of a domain")
-    parser.add_argument("-da", "--deleteall", type=str, nargs=1, help="Delete details of all domains")
+    parser.add_argument("-da", "--deleteall", action='store_true', help="Delete details of all domains")
 
 
     args = parser.parse_args()
@@ -125,3 +125,7 @@ if __name__ == "__main__":
         domain_name = arguments[0]
 
         delete_password(domain_name)
+
+    elif args.__getattribute__("deleteall"):
+
+        delete_all()
