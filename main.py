@@ -1,11 +1,11 @@
 import argparse
 import hashlib
-import sys
+# import sys
 import binascii
 # import db_connect
 import getpass
 import pyperclip
-import os
+# import os
 from pbkdf2 import PBKDF2
 from Crypto.Cipher import AES
 #from backports.pbkdf2 import pbkdf2_hmac
@@ -64,6 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("-dr", "--deleterecord", type=str, nargs=1, help="Delete details of a domain")
     parser.add_argument("-da", "--deleteall", action='store_true', help="Delete details of all domains")
 
+    # parser.add_argument("-gp", "--getpassword", type=str, nargs)    
 
     args = parser.parse_args()
 
