@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+psycopg2 = "*"
+argon2-cffi = "*"
+pbkdf2 = "*"
+pycryptodomex = "*"
+pycryptodome = "*"
+pyperclip = "*"
+
+[requires]
+python_version = "3.9"
